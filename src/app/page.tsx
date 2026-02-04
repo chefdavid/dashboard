@@ -14,6 +14,8 @@ import { KPICard } from '@/components/kpi-card';
 import { SalesChart } from '@/components/sales-chart';
 import { TopItems } from '@/components/top-items';
 import { LocationComparison } from '@/components/location-comparison';
+import { DailyDetail } from '@/components/daily-detail';
+import { OnlineComparison } from '@/components/online-comparison';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { getDailySales } from '@/lib/supabase';
