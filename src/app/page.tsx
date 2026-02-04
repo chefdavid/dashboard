@@ -53,7 +53,7 @@ export default function Dashboard() {
   
   // Calculate KPIs
   const kpis = useMemo(() => {
-    const totalSales = salesData.reduce((sum, s) => sum + s.net_sales, 0);
+    const totalSales = salesData.reduce((sum, s) => sum + s.net_sales + (s.online_sales || 0), 0);
     const totalOnline = salesData.reduce((sum, s) => sum + (s.online_sales || 0), 0);
     const totalTips = salesData.reduce((sum, s) => sum + s.credit_card_tips, 0);
     const totalChecks = salesData.reduce((sum, s) => sum + s.check_count, 0);
@@ -237,19 +237,17 @@ export default function Dashboard() {
                           <div className="flex justify-between items-start mb-2">
                             <div>
                               <div className="font-medium">{new Date(sale.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</div>
-                              <div className="text-sm text-gray-500">{sale.check_count} checks</div>
+                              <div className="text-sm text-gray-500">{sale.check_count} POS checks{sale.online_order_count ? ` + ${sale.online_order_count} online` : ''}</div>
                             </div>
                             <div className="text-right">
-                              <div className="text-lg font-bold text-green-600">{formatCurrency(sale.net_sales)}</div>
-                              <div className="text-xs text-gray-500">Tips: {formatCurrency(sale.credit_card_tips)}</div>
+                              <div className="text-lg font-bold text-green-600">{formatCurrency(sale.net_sales + (sale.online_sales || 0))}</div>
+                              <div className="text-xs text-gray-500">Grand Total</div>
                             </div>
                           </div>
-                          <div className="flex gap-4 text-xs text-gray-600">
-                            <span>💵 Cash: {formatCurrency(sale.cash_sales)}</span>
-                            <span>💳 Card: {formatCurrency(sale.credit_card_sales)}</span>
-                            {sale.online_sales !== undefined && sale.online_sales > 0 && (
-                              <span className="text-blue-600">🌐 Online: {formatCurrency(sale.online_sales)}</span>
-                            )}
+                          <div className="flex flex-wrap gap-3 text-xs">
+                            <span className="text-gray-600">🏪 POS: {formatCurrency(sale.net_sales)}</span>
+                            <span className="text-blue-600">🌐 Online: {formatCurrency(sale.online_sales || 0)}</span>
+                            <span className="text-orange-600">💳 Tips: {formatCurrency(sale.credit_card_tips)}</span>
                           </div>
                           {sale.online_failed_count !== undefined && sale.online_failed_count > 0 && (
                             <div className="text-xs text-red-500 mt-1">
