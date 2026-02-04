@@ -19,7 +19,7 @@ import { OnlineComparison } from '@/components/online-comparison';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { getDailySales } from '@/lib/supabase';
-import { generateMockItemSales } from '@/lib/mock-data';
+// import { generateMockItemSales } from '@/lib/mock-data'; // DISABLED - using mock data
 import { DailySales, LOCATIONS } from '@/lib/types';
 
 export default function Dashboard() {
@@ -29,8 +29,8 @@ export default function Dashboard() {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [selectedSale, setSelectedSale] = useState<DailySales | null>(null);
   
-  // Item sales still uses mock data until we build that sync
-  const itemsData = useMemo(() => generateMockItemSales(), []);
+  // Item sales disabled until we pull real data from SpotOn
+  const itemsData: any[] = [];
   
   // Fetch real data from Supabase
   const fetchData = async () => {
@@ -190,13 +190,13 @@ export default function Dashboard() {
               <TabsContent value="overview">
                 <div className="grid lg:grid-cols-2 gap-6">
                   <LocationComparison data={salesData} />
-                  <TopItems data={itemsData} location="all" />
+                  <div className="bg-gray-50 rounded-lg p-8 text-center text-gray-500"><p>📊 Item sales data coming soon</p><p className="text-sm">Will pull from SpotOn item reports</p></div>
                 </div>
               </TabsContent>
               
               <TabsContent value="hill_donut">
                 <div className="grid lg:grid-cols-2 gap-6">
-                  <TopItems data={itemsData} location="hill_donut" />
+                  <div className="bg-gray-50 rounded-lg p-8 text-center text-gray-500"><p>📊 Item sales coming soon</p></div>
                   <div className="space-y-4">
                     {salesData
                       .filter(s => s.location === 'hill_donut')
@@ -226,7 +226,7 @@ export default function Dashboard() {
               
               <TabsContent value="red_barn">
                 <div className="grid lg:grid-cols-2 gap-6">
-                  <TopItems data={itemsData} location="red_barn" />
+                  <div className="bg-gray-50 rounded-lg p-8 text-center text-gray-500"><p>📊 Item sales coming soon</p></div>
                   <div className="space-y-4">
                     {salesData
                       .filter(s => s.location === 'red_barn')
