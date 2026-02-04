@@ -27,6 +27,7 @@ export default function Dashboard() {
   const [salesData, setSalesData] = useState<DailySales[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [selectedSale, setSelectedSale] = useState<DailySales | null>(null);
   
   // Item sales still uses mock data until we build that sync
   const itemsData = useMemo(() => generateMockItemSales(), []);
@@ -202,7 +203,7 @@ export default function Dashboard() {
                       .sort((a, b) => b.date.localeCompare(a.date))
                       .slice(0, 7)
                       .map(sale => (
-                        <div key={sale.id} className="bg-white rounded-lg border p-4">
+                        <div key={sale.id} className="bg-white rounded-lg border p-4 cursor-pointer hover:shadow-md transition-shadow" onClick={() => setSelectedSale(sale)}>
                           <div className="flex justify-between items-start mb-2">
                             <div>
                               <div className="font-medium">{new Date(sale.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</div>
@@ -232,7 +233,7 @@ export default function Dashboard() {
                       .sort((a, b) => b.date.localeCompare(a.date))
                       .slice(0, 7)
                       .map(sale => (
-                        <div key={sale.id} className="bg-white rounded-lg border p-4">
+                        <div key={sale.id} className="bg-white rounded-lg border p-4 cursor-pointer hover:shadow-md transition-shadow" onClick={() => setSelectedSale(sale)}>
                           <div className="flex justify-between items-start mb-2">
                             <div>
                               <div className="font-medium">{new Date(sale.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</div>
@@ -274,6 +275,11 @@ export default function Dashboard() {
           )}
         </div>
       </footer>
+      
+      {/* Detail Modal */}
+      {selectedSale && (
+        <DailyDetail sale={selectedSale} onClose={() => setSelectedSale(null)} />
+      )}
     </div>
   );
 }
