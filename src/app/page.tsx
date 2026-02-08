@@ -61,13 +61,25 @@ export default function Dashboard() {
     const daysCount = new Set(salesData.map(s => s.date)).size;
     const dailyAvg = daysCount > 0 ? totalSales / daysCount : 0;
     
+    // Red Barn online-specific metrics
+    const redBarnOnlineData = salesData.filter(s => s.location === 'red_barn' && (s.online_sales || 0) > 0);
+    const totalOnlineOrders = redBarnOnlineData.reduce((sum, s) => sum + (s.online_order_count || 0), 0);
+    const onlineDaysCount = redBarnOnlineData.length;
+    const dailyOnlineAvg = onlineDaysCount > 0 ? totalOnline / onlineDaysCount : 0;
+    const avgOnlineOrderValue = totalOnlineOrders > 0 ? totalOnline / totalOnlineOrders : 0;
+    const avgOnlineOrdersPerDay = onlineDaysCount > 0 ? totalOnlineOrders / onlineDaysCount : 0;
+    
     return {
       totalSales,
       totalOnline,
       totalTips,
       totalChecks,
       avgCheck,
-      dailyAvg
+      dailyAvg,
+      dailyOnlineAvg,
+      avgOnlineOrderValue,
+      avgOnlineOrdersPerDay,
+      totalOnlineOrders
     };
   }, [salesData]);
   
@@ -134,7 +146,7 @@ export default function Dashboard() {
         ) : (
           <>
             {/* KPI Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-8 gap-4 mb-8">
               <KPICard
                 title="Total Sales"
                 value={formatCurrency(kpis.totalSales)}
@@ -150,9 +162,23 @@ export default function Dashboard() {
               <KPICard
                 title="Online Sales"
                 value={formatCurrency(kpis.totalOnline)}
-                subtitle="Red Barn website"
+                subtitle={`${kpis.totalOnlineOrders} orders`}
                 icon={Globe}
                 color="#7c3aed"
+              />
+              <KPICard
+                title="Online Daily Avg"
+                value={formatCurrency(kpis.dailyOnlineAvg)}
+                subtitle="Red Barn web"
+                icon={Globe}
+                color="#9333ea"
+              />
+              <KPICard
+                title="Avg Online Order"
+                value={formatCurrency(kpis.avgOnlineOrderValue)}
+                subtitle={`${kpis.avgOnlineOrdersPerDay.toFixed(1)}/day`}
+                icon={CreditCard}
+                color="#a855f7"
               />
               <KPICard
                 title="CC Tips"
